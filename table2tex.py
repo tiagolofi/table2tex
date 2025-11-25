@@ -59,6 +59,8 @@ class Table(ABC):
 '''
         values = ''.join(lines)
         values = values.rstrip('\n')
+        header = header.replace('%', '\%')
+        values = values.replace('%', '\%')
 
         return table_part1 + header + '\n\\midrule\n' + values + table_part2
 
