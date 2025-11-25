@@ -1,0 +1,37 @@
+% pacotes necessários
+\usepackage[brazil]{babel} % ajustando idioma para pt-br
+\usepackage{graphicx} % lib pra controlar altura e largura das coisas
+\usepackage[table]{xcolor} % lib pra editar a cor da tabela
+\usepackage{booktabs} % lib para dividir a tabela
+\usepackage{caption} % pra mexer com os rodapés
+
+% configurações dos rodapés
+\captionsetup{font=footnotesize} 
+\captionsetup[table]{name=Notas}
+
+\begin{table}[h!]
+\centering
+\rowcolors{2}{gray!15}{white}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccc}
+\midrule
+\textbf{Tratamento} &
+\textbf{Repolho (kg/m²)} &
+\textbf{Cebolinha (kg/m²)} &
+\textbf{Rabanete (kg/m²)} &
+\textbf{IEA} \\
+\midrule
+Re        & 4,9 & --  & --  & 1   \\
+Ce        & --  & 2,4 & --  & 1   \\
+Ra        & --  & --  & 3,3 & 1   \\
+Re/Ce     & 4,1 & 1,1 & --  & 1,3 \\
+Re/Ra     & 5,0 & --  & 1,2 & 1,4 \\
+Ce/Ra     & --  & 1,1 & 1,3 & 0,8 \\
+Re/Ce/Ra  & 4,2 & 0,3 & 0,7 & 1,2 \\
+\midrule
+\end{tabular}
+}
+\caption{
+Re: monocultura de repolho; Ce: monocultura de cebolinha; Ra: monocultura de rabanete; Re/Ce: consórcio repolho e cebolinha; Re/Ra: consórcio repolho e rabanete; Ce/Ra: consórcio cebolinha e rabanete; Re/Ce/Ra: consórcio repolho, cebolinha e rabanete; IEA: índice de equivalência de área.
+}
+\end{table}

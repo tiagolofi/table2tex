@@ -1,0 +1,111 @@
+
+
+from abc import ABC, abstractmethod
+from typing import List, Dict
+from pandas import DataFrame, read_excel, read_json
+
+import functools
+import warnings
+
+def experimental(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        warnings.warn(
+            f"O método '{func.__name__}' é experimental e pode ser alterado "
+            "ou removido no futuro. Use por sua conta e risco.",
+            FutureWarning,
+            stacklevel=2
+        )
+        return func(*args, **kwargs)
+    return wrapper
+
+class Table(ABC):
+
+    def __init__(self, filename: str = None, data: DataFrame = None) -> None:
+        self.filename = filename
+        self.data = data
+
+        if self.filename is None and self.data is None:
+            raise ValueError("É necessário fornecer um filename ou um DataFrame.")
+        
+        if self.filename is not None and self.data is not None:
+            raise ValueError("Forneça apenas um entre filename ou DataFrame, não ambos.")
+
+    @abstractmethod
+    def render(self) -> str: ...
+
+    def from_dataframe(self, df: DataFrame) -> None:
+        n_columns = 'c' * len(df.columns)
+        header = ' & \n'.join(['\\textbf{' + i + '}' for i in df.columns]) + ' \\\\'
+        lines = []
+        for i in df.values:
+            line = " & ".join([str(j) if j else '--' for j in i]) + ' \\\\\n'
+            lines.append(line)
+
+        table_part1 = '''
+\\begin{table}[h!]
+\\centering
+\\rowcolors{2}{gray!15}{white}
+\\scalebox{0.8}{%
+\\resizebox{\\textwidth}{!}{%
+\\begin{tabular}{''' + n_columns + '''}
+\midrule
+'''
+
+        table_part2 = '''
+\\midrule
+\\end{tabular}}}
+\\end{table}
+'''
+        values = ''.join(lines)
+        values = values.rstrip('\n')
+
+        return table_part1 + header + '\n\\midrule\n' + values + table_part2
+
+
+class Reader:
+
+    def converter(self, type: str, filename: str = None, data: List|Dict|List[Dict]|DataFrame = None) -> Table:
+        if type == 'json':
+            return Json(filename, data)
+        elif type == 'xlsx':
+            return Xlsx(filename, data)
+        else:
+            raise ValueError(f"Tipo de tabela '{type}' não suportado.")
+
+class Json(Table):
+    
+    def __init__(self, filename: str = None, data: List|Dict|List[Dict] = None) -> None:
+        super().__init__(filename=filename, data=data)
+
+    @experimental
+    def render(self) -> str:
+        if self.filename:
+            return self.__render_from_file()
+        return self.__render_from_json()
+
+    def __render_from_json(self) -> str:
+        df = read_json(self.data)
+        return self.from_dataframe(df)
+
+    def __render_from_file(self) -> str:
+        df = read_json(self.filename)
+        return self.from_dataframe(df)
+
+class Xlsx(Table):
+    
+    def __init__(self, filename: str = None, data: DataFrame = None) -> None:
+        super().__init__(filename=filename, data=data)
+        
+    def render(self) -> str:
+        if self.filename:
+            return self.__render_from_file()
+        return self.__render_from_dataframe()
+
+    def __render_from_dataframe(self) -> str:
+        return self.from_dataframe(self.data)
+
+    def __render_from_file(self) -> str:
+        df = read_excel(self.filename)
+        return self.from_dataframe(df)
+        

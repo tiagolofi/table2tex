@@ -1,0 +1,17 @@
+[
+    {
+        "nome": "João Silva",
+        "idade": 28,
+        "cidade": "São Paulo"
+    },
+    {
+        "nome": "Maria Oliveira",
+        "idade": 34,
+        "cidade": "Rio de Janeiro"
+    },
+    {
+        "nome": "Carlos Souza",
+        "idade": 22,
+        "cidade": "Belo Horizonte"
+    }
+]
