@@ -10,16 +10,6 @@ Conversor de Tabelas .xlsx, .json e .csv em Tabelas .tex
 
 Configs:
 ```tex
-% pacotes necessários
-\usepackage[brazil]{babel} % ajustando idioma para pt-br
-\usepackage{graphicx} % lib pra controlar altura e largura das coisas
-\usepackage[table]{xcolor} % lib pra editar a cor da tabela
-\usepackage{booktabs} % lib para dividir a tabela
-\usepackage{caption} % pra mexer com os rodapés
-
-% configurações dos rodapés
-\captionsetup{font=footnotesize} 
-\captionsetup[table]{name=Notas}
 ```
 
 ## How to use
