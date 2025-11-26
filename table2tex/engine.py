@@ -1,8 +1,9 @@
 
 
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import List, Dict
-from pandas import DataFrame, read_excel, read_json
+from pandas import DataFrame, read_excel, read_json, read_csv
 
 import functools
 import warnings
@@ -19,7 +20,12 @@ def experimental(func):
         return func(*args, **kwargs)
     return wrapper
 
-class Table(ABC):
+class ConverterType(Enum):
+    JSON = 'json'
+    XLSX = 'xlsx'
+    CSV = 'csv'
+
+class Converter(ABC):
 
     def __init__(self, filename: str = None, data: DataFrame = None) -> None:
         self.filename = filename
@@ -49,7 +55,7 @@ class Table(ABC):
 \\scalebox{0.8}{%
 \\resizebox{\\textwidth}{!}{%
 \\begin{tabular}{''' + n_columns + '''}
-\midrule
+\\midrule
 '''
 
         table_part2 = '''
@@ -59,23 +65,25 @@ class Table(ABC):
 '''
         values = ''.join(lines)
         values = values.rstrip('\n')
-        header = header.replace('%', '\%')
-        values = values.replace('%', '\%')
+        header = header.replace('%', '\\%')
+        values = values.replace('%', '\\%')
 
         return table_part1 + header + '\n\\midrule\n' + values + table_part2
 
 
 class Reader:
 
-    def converter(self, type: str, filename: str = None, data: List|Dict|List[Dict]|DataFrame = None) -> Table:
-        if type == 'json':
-            return Json(filename, data)
-        elif type == 'xlsx':
-            return Xlsx(filename, data)
+    def converter(self, type: ConverterType, filename: str = None, data: List|Dict|List[Dict]|DataFrame = None) -> Converter:
+        if type == ConverterType.JSON:
+            return JsonConverter(filename, data)
+        elif type == ConverterType.XLSX:
+            return XlsxConverter(filename, data)
+        elif type == ConverterType.CSV:
+            return CsvConverter(filename, data)
         else:
             raise ValueError(f"Tipo de tabela '{type}' não suportado.")
 
-class Json(Table):
+class JsonConverter(Converter):
     
     def __init__(self, filename: str = None, data: List|Dict|List[Dict] = None) -> None:
         super().__init__(filename=filename, data=data)
@@ -86,15 +94,15 @@ class Json(Table):
             return self.__render_from_file()
         return self.__render_from_json()
 
-    def __render_from_json(self) -> str:
-        df = read_json(self.data)
-        return self.from_dataframe(df)
-
     def __render_from_file(self) -> str:
         df = read_json(self.filename)
         return self.from_dataframe(df)
 
-class Xlsx(Table):
+    def __render_from_json(self) -> str:
+        df = read_json(self.data)
+        return self.from_dataframe(df)
+
+class CsvConverter(Converter):
     
     def __init__(self, filename: str = None, data: DataFrame = None) -> None:
         super().__init__(filename=filename, data=data)
@@ -102,9 +110,20 @@ class Xlsx(Table):
     def render(self) -> str:
         if self.filename:
             return self.__render_from_file()
-        return self.__render_from_dataframe()
+        return self.from_dataframe(self.data)
 
-    def __render_from_dataframe(self) -> str:
+    def __render_from_file(self) -> str:
+        df = read_csv(self.filename, sep=';')
+        return self.from_dataframe(df)
+
+class XlsxConverter(Converter):
+    
+    def __init__(self, filename: str = None, data: DataFrame = None) -> None:
+        super().__init__(filename=filename, data=data)
+        
+    def render(self) -> str:
+        if self.filename:
+            return self.__render_from_file()
         return self.from_dataframe(self.data)
 
     def __render_from_file(self) -> str:

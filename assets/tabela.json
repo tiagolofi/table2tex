@@ -1,0 +1,23 @@
+[
+    {
+        "nome": "João Silva",
+        "idade": 28,
+        "cidade": "São Paulo",
+        "salario": 3500.50,
+        "bonus": "10%"
+    },
+    {
+        "nome": "Maria Oliveira",
+        "idade": 34,
+        "cidade": "Rio de Janeiro",
+        "salario": 4200.75,
+        "bonus": "12.5%"
+    },
+    {
+        "nome": "Carlos Souza",
+        "idade": 22,
+        "cidade": "Belo Horizonte",
+        "salario": 2800.00,
+        "bonus": "8%"
+    }
+]
