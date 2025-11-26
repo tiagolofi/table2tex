@@ -15,6 +15,9 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+  "pandas", "openpyxl"
+]
 license = "MIT"
 license-files = ["LICEN[CS]E*"]
 

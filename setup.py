@@ -10,8 +10,8 @@ setup(
     packages=find_packages(),
     python_requires=">=3.9",
     install_requires=[
-        "pandas>=2.3.3",
-        "openpyxl>=3.1.5"
+        "pandas",
+        "openpyxl"
     ],
     extras_require={
     },
