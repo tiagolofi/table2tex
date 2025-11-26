@@ -2,8 +2,10 @@
 
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List, Dict
+from typing import List, Dict, Any
 from pandas import DataFrame, read_excel, read_json, read_csv
+from json import dumps
+from io import StringIO
 
 import functools
 import warnings
@@ -85,7 +87,7 @@ class Reader:
 
 class JsonConverter(Converter):
     
-    def __init__(self, filename: str = None, data: List|Dict|List[Dict] = None) -> None:
+    def __init__(self, filename: str = None, data: List|Dict|List[Dict[str, Any]] = None) -> None:
         super().__init__(filename=filename, data=data)
 
     @experimental
@@ -99,7 +101,7 @@ class JsonConverter(Converter):
         return self.from_dataframe(df)
 
     def __render_from_json(self) -> str:
-        df = read_json(self.data)
+        df = read_json(StringIO(dumps(self.data)), orient = 'records')
         return self.from_dataframe(df)
 
 class CsvConverter(Converter):
