@@ -14,7 +14,7 @@ def experimental(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         warnings.warn(
-            f"O método '{func.__name__}' é experimental e pode ser alterado "
+            f"Esta versão do método '{func.__name__}' é experimental e pode ser alterado "
             "ou removido no futuro. Use por sua conta e risco.",
             FutureWarning,
             stacklevel=2
